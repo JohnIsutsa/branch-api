@@ -13,7 +13,6 @@
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [WebSocket Integration](#websocket-integration)
-- [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
 
