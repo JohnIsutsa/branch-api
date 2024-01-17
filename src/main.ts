@@ -1,8 +1,34 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  app.setGlobalPrefix('api')
+
+  const cfg = app.get(ConfigService);
+  const PORT = cfg.get('app.port');
+  const MODE = cfg.get('app.mode');
+  
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept',
+    credentials: true,
+  });
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Nere')
+    .setDescription('Nere Server API')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('docs', app, document);
+
+  await app.listen(PORT);
+  console.log(`Application is running on ${MODE}: ${await app.getUrl()}/api`);
+
 }
 bootstrap();
