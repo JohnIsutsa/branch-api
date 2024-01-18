@@ -1,5 +1,6 @@
 import e from "express";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Ticket } from "src/tickets/entities/ticket.entity";
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRole {
     CUSTOMER = 'customer',
@@ -28,4 +29,10 @@ export class User {
 
     @UpdateDateColumn({ type: 'timestamp'})
     updated_at: Date;
+
+    @OneToMany(() => Ticket, ticket => ticket.customer)
+    tickets: Ticket[];
+
+    @ManyToMany(() => Ticket, ticket => ticket.agents)
+    assigned_tickets: Ticket[];
 }
