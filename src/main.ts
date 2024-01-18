@@ -19,9 +19,11 @@ async function bootstrap() {
   });
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Nere')
-    .setDescription('Nere Server API')
+    .setTitle('Branch API')
+    .setDescription('The Branch customer service API documentation')
     .setVersion('1.0')
+    .addTag('Users')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
