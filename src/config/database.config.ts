@@ -8,7 +8,7 @@ export default registerAs(
         url: process.env.DB_URL,
         entities: ["dist/**/*.entity{.ts,.js}"],
         migrations: ["dist/src/database/migrations/*.js"],
-        synchronize: false,
+        synchronize: true,
         ssl: process.env.DB_SSL === "true",
     })
 );
