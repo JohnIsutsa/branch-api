@@ -1,0 +1,20 @@
+export enum UserRole {
+    CUSTOMER = 'customer',
+    AGENT = 'agent',
+}
+
+export enum TicketStatus {
+    OPEN = 'OPEN',
+    IN_PROGRESS = 'IN_PROGRESS',
+    RESOLVED = 'RESOLVED',
+    CLOSED = 'CLOSED'
+}
+
+export enum TicketType {
+    LOAN_APPLICATION_STATUS = 'LOAN_APPLICATION_STATUS',
+    REPAYMENT_ISSUES = 'REPAYMENT_ISSUES',
+    LOAN_APPROVAL_PROCESS = 'LOAN_APPROVAL_PROCESS',
+    ACCOUNT_MANAGEMENT = 'ACCOUNT_MANAGEMENT',
+    TECHNICAL_ISSUES = 'TECHNICAL_ISSUES',
+    OTHER = 'OTHER'
+}

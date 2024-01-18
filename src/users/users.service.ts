@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User, UserRole } from './entities/user.entity';
+import { UserRole } from '../common/enums';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -26,10 +27,10 @@ export class UsersService {
    * Retrieves all users from the user repository.
    * @returns {Promise<User[]>} A promise that resolves to an array of User objects representing the users.
    */
-  findAll() {
+  findAll(): Promise<User[]> {
     return this.userRepo.find();
   }
-  
+
   /**
    * Retrieves all customers from the user repository.
    * @returns {Promise<User[]>} A promise that resolves to an array of User objects representing the customers.
@@ -57,7 +58,7 @@ export class UsersService {
 
 
   async findOneCustomer(uuid: string) {
-    const customer = await  this.userRepo.findOne({ where: { uuid } });
+    const customer = await this.userRepo.findOne({ where: { uuid } });
     if (customer && customer.role !== UserRole.CUSTOMER) {
       throw new NotFoundException('No customer found with the provided uuid');
     }
@@ -65,11 +66,15 @@ export class UsersService {
   }
 
   async findOneAgent(uuid: string) {
-    const agent = await  this.userRepo.findOne({ where: { uuid } });
+    const agent = await this.userRepo.findOne({ where: { uuid } });
     if (agent && agent.role !== UserRole.AGENT) {
       throw new NotFoundException('No agent found with the provided uuid');
     }
     return agent;
+  }
+
+  async findOne(uuid: string): Promise<User> {
+    return await this.userRepo.findOne({ where: { uuid } });
   }
 
   async update(uuid: string, updateUserDto: UpdateUserDto) {

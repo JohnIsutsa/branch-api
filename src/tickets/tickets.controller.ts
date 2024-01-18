@@ -11,8 +11,8 @@ export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) { }
 
   @Post()
-  create(@Body() createTicketDto: CreateTicketDto) {
-    const ticket = this.ticketsService.create(createTicketDto);
+  async create(@Body() createTicketDto: CreateTicketDto) {
+    const ticket = await this.ticketsService.create(createTicketDto);
     return { status: 'success', data: ticket }
   }
 

@@ -1,22 +1,7 @@
-import exp from "constants";
+import { TicketStatus, TicketType } from "../../common/enums";
+import { Message } from "src/messages/entities/message.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
-export enum TicketStatus {
-    OPEN = 'OPEN',
-    IN_PROGRESS = 'IN_PROGRESS',
-    RESOLVED = 'RESOLVED',
-    CLOSED = 'CLOSED'
-}
-
-export enum TicketType {
-    LOAN_APPLICATION_STATUS = 'LOAN_APPLICATION_STATUS',
-    REPAYMENT_ISSUES = 'REPAYMENT_ISSUES',
-    LOAN_APPROVAL_PROCESS = 'LOAN_APPROVAL_PROCESS',
-    ACCOUNT_MANAGEMENT = 'ACCOUNT_MANAGEMENT',
-    TECHNICAL_ISSUES = 'TECHNICAL_ISSUES',
-    OTHER = 'OTHER'
-}
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Ticket {
@@ -47,4 +32,7 @@ export class Ticket {
     @ManyToMany(() => User, user => user.assigned_tickets)
     @JoinTable()
     agents: User[];
+
+    @OneToMany(() => Message, message => message.ticket)
+    messages: Message[];
 }
