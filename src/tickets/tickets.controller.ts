@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { TicketsService } from './tickets.service';
-import { CreateTicketDto } from './dto/create-ticket.dto';
-import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { GetTicketDto } from './dto/get-ticket.dto';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { GetTicketDto } from './dto/get-ticket.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { TicketsService } from './tickets.service';
 
 @ApiTags('Tickets')
 @Controller('tickets')
@@ -42,6 +42,12 @@ export class TicketsController {
   @Patch(':uuid/add-agent')
   async addAgentToTicket(@Param('uuid') uuid: string, @Body('agent_uuid') agent_uuid: string) {
     const ticket = await this.ticketsService.addAgentToTicket(uuid, agent_uuid);
+    return { status: 'success', data: ticket };
+  }
+
+  @Patch(':uuid/remove-agent')
+  async removeAgentFromTicket(@Param('uuid') uuid: string, @Body('agent_uuid') agent_uuid: string) {
+    const ticket = await this.ticketsService.removeAgentFromTicket(uuid, agent_uuid);
     return { status: 'success', data: ticket };
   }
 

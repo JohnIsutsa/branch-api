@@ -115,6 +115,19 @@ export class TicketsService {
     return await this.ticketRepository.save(ticket);
   }
 
+  async removeAgentFromTicket(uuid: string, agentUuid: string): Promise<Ticket> {
+    const ticket = await this.ticketRepository.findOne({ where: { uuid }, relations: ['agents'] });
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
+    }
+    const agent = await this.usersService.findOneAgent(agentUuid);
+    if (!agent) {
+      throw new NotFoundException('Agent not found');
+    }
+    ticket.agents = ticket.agents.filter(agent => agent.uuid !== agentUuid);
+    return this.ticketRepository.save(ticket);
+  }
+
   async update(uuid: string, updateTicketDto: UpdateTicketDto) {
     const ticket = await this.ticketRepository.findOne({ where: { uuid } });
     if (!ticket) {
@@ -125,6 +138,5 @@ export class TicketsService {
     return this.ticketRepository.save(ticket);
     // return this.ticketRepository.save({ ...ticket, ...updateTicketDto });
   }
-
-
+  
 }
