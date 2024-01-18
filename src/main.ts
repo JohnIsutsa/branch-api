@@ -23,6 +23,7 @@ async function bootstrap() {
     .setDescription('The Branch customer service API documentation')
     .setVersion('1.0')
     .addTag('Users')
+    .addTag('Tickets')
     .addBearerAuth()
     .build();
 

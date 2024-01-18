@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,16 +58,16 @@ export class UsersService {
 
   async findOneCustomer(uuid: string) {
     const customer = await  this.userRepo.findOne({ where: { uuid } });
-    if (customer.role !== UserRole.CUSTOMER) {
-      throw new BadRequestException('No customer found with the provided uuid');
+    if (customer && customer.role !== UserRole.CUSTOMER) {
+      throw new NotFoundException('No customer found with the provided uuid');
     }
     return customer;
   }
 
   async findOneAgent(uuid: string) {
     const agent = await  this.userRepo.findOne({ where: { uuid } });
-    if (agent.role !== UserRole.AGENT) {
-      throw new BadRequestException('No agent found with the provided uuid');
+    if (agent && agent.role !== UserRole.AGENT) {
+      throw new NotFoundException('No agent found with the provided uuid');
     }
     return agent;
   }
@@ -75,7 +75,7 @@ export class UsersService {
   async update(uuid: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepo.findOne({ where: { uuid } });
     if (!user) {
-      throw new BadRequestException('No user found with the provided id');
+      throw new NotFoundException('No user found with the provided id');
     }
     Object.assign(user, updateUserDto);
     return this.userRepo.save(user);
