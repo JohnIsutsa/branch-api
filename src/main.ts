@@ -24,6 +24,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Users')
     .addTag('Tickets')
+    .addTag('Messages')
     .addBearerAuth()
     .build();
 

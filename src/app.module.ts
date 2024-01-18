@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from './config/config.module';
 import { UsersModule } from './users/users.module';
 import { TicketsModule } from './tickets/tickets.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { TicketsModule } from './tickets/tickets.module';
       useFactory: (configService: ConfigService ) => configService.get('database'),
     }),
     UsersModule,
-    TicketsModule
+    TicketsModule,
+    MessagesModule
   ],
   controllers: [],
   providers: [],
