@@ -1,33 +1,30 @@
-import e from "express";
-import { Ticket } from "src/tickets/entities/ticket.entity";
 import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserRole } from "../../common/enums";
+import { Message } from "../../messages/entities/message.entity";
+import { Ticket } from "../../tickets/entities/ticket.entity";
 
-export enum UserRole {
-    CUSTOMER = 'customer',
-    AGENT = 'agent',
-}
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
 
-    @Column({ nullable: false})
+    @Column({ nullable: false })
     name: string;
 
     @Column({ unique: true, nullable: false })
     email: string
 
-    @Column({ nullable: false})
+    @Column({ nullable: false })
     password: string;
 
     @Column({ enum: UserRole, default: UserRole.CUSTOMER, nullable: false })
-    role: string;
+    role: UserRole;
 
-    @CreateDateColumn({ type: 'timestamp'})
+    @CreateDateColumn({ type: 'timestamp' })
     created_at: Date;
 
-    @UpdateDateColumn({ type: 'timestamp'})
+    @UpdateDateColumn({ type: 'timestamp' })
     updated_at: Date;
 
     @OneToMany(() => Ticket, ticket => ticket.customer)
@@ -35,4 +32,7 @@ export class User {
 
     @ManyToMany(() => Ticket, ticket => ticket.agents)
     assigned_tickets: Ticket[];
+
+    @OneToMany(() => Message, message => message.user)
+    messages: Message[];
 }

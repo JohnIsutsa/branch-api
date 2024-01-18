@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRole } from './entities/user.entity';
+import { UserRole } from '../common/enums';
 import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { SigninUserDto } from './dto/signin-user.dto';

@@ -1,6 +1,7 @@
+import { TicketStatus } from "../../common/enums";
 import { PaginationArgs } from "../../common/dto/pagination-args.dto";
 import { Paginator } from "../../common/dto/paginator.dto";
-import { Ticket, TicketStatus } from "../entities/ticket.entity";
+import { Ticket} from "../entities/ticket.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsOptional } from "class-validator";
 

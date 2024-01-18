@@ -1,6 +1,6 @@
-import { IsEnum, IsOptional, IsString } from "class-validator";
-import { TicketStatus, TicketType } from "../entities/ticket.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum, IsOptional, IsString } from "class-validator";
+import { TicketType } from "src/common/enums";
 
 export class CreateTicketDto {
     @ApiProperty({ name: 'customer_uuid', description: 'The uuid of the customer who created the ticket'})
