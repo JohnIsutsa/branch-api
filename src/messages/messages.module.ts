@@ -15,5 +15,6 @@ import { Ticket } from '../tickets/entities/ticket.entity';
   ],
   controllers: [MessagesController],
   providers: [MessagesService],
+  exports: [MessagesService]
 })
 export class MessagesModule { }
