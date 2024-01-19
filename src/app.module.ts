@@ -5,6 +5,7 @@ import { ConfigModule } from './config/config.module';
 import { UsersModule } from './users/users.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { MessagesModule } from './messages/messages.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { MessagesModule } from './messages/messages.module';
     }),
     UsersModule,
     TicketsModule,
-    MessagesModule
+    MessagesModule,
+    ChatModule
   ],
   controllers: [],
   providers: [],
