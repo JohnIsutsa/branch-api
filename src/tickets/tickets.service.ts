@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 import { paginate } from '../common/pagination/paginate';
+import { Message } from '../messages/entities/message.entity';
 import { UsersService } from '../users/users.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { GetTicketDto, TicketPaginator } from './dto/get-ticket.dto';
@@ -18,10 +19,11 @@ const fuseOptions = {
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
+    @InjectRepository(Message) private messageRepository: Repository<Message>,
     private usersService: UsersService,
   ) { }
 
-  async create(createTicketDto: CreateTicketDto) {
+  async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
     const { customer_uuid } = createTicketDto;
     const customer = await this.usersService.findOneCustomer(customer_uuid);
     if (!customer) {
@@ -30,7 +32,18 @@ export class TicketsService {
 
     createTicketDto['customer'] = customer;
     const ticket = this.ticketRepository.create(createTicketDto);
-    return this.ticketRepository.save(ticket);
+    await this.ticketRepository.save(ticket);
+
+    //create a message from the description of the ticket
+    const message = this.messageRepository.create({
+      content: createTicketDto.description,
+      sender: customer.role,
+      user: customer,
+      ticket
+    });
+    this.messageRepository.save(message);
+
+    return ticket;
   }
 
   async findAll(getTicketDto: GetTicketDto): Promise<TicketPaginator> {
