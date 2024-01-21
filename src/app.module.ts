@@ -7,6 +7,8 @@ import { TicketsModule } from './tickets/tickets.module';
 import { MessagesModule } from './messages/messages.module';
 import { ChatModule } from './chat/chat.module';
 import { ParserModule } from './parser/parser.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { RemovePasswordInterceptor } from './interceptors/remove-password.interceptor';
 
 @Module({
   imports: [
@@ -22,6 +24,11 @@ import { ParserModule } from './parser/parser.module';
     ParserModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RemovePasswordInterceptor
+    }
+  ],
 })
 export class AppModule {}
