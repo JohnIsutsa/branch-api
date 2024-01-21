@@ -8,6 +8,7 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { GetTicketDto, TicketPaginator } from './dto/get-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { Ticket } from './entities/ticket.entity';
+import { callOpenAI } from '../utils/ticket-classifier.utils';
 const Fuse = require('fuse.js');
 
 const fuseOptions = {
@@ -33,6 +34,9 @@ export class TicketsService {
     createTicketDto['customer'] = customer;
     const ticket = this.ticketRepository.create(createTicketDto);
     await this.ticketRepository.save(ticket);
+
+    // Asynchronously classify the ticket
+    this.classifyTicket(ticket);
 
     //create a message from the description of the ticket
     const message = this.messageRepository.create({
@@ -151,5 +155,47 @@ export class TicketsService {
     return this.ticketRepository.save(ticket);
     // return this.ticketRepository.save({ ...ticket, ...updateTicketDto });
   }
-  
+
+  async testClassifier(uuid: string) {
+    const ticket = await this.ticketRepository.findOne({ where: { uuid } });
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
+    }
+    console.log('Ticket:', ticket);
+    this.classifyTicket(ticket);
+  }
+
+  async classifyTicket(ticket: Ticket) {
+    try {
+      const {} = ticket;
+      const completion = await callOpenAI(ticket);
+      const jsonString = completion.choices[0].text.trim();
+      const jsonObject = JSON.parse(jsonString);
+
+      if (this.isValidTicketObject(jsonObject)) {
+        const updatedTicket: Ticket = {
+          ...ticket,
+          ticket_type: jsonObject.ticket_type,
+        };
+
+        await this.ticketRepository.save(updatedTicket);
+      } else {
+        console.error('Invalid JSON object structure.');
+      }
+    } catch (error) {
+      console.error('An error occurred while classifying the ticket:', error);
+      throw new Error('Ticket classification failed.');
+    }
+  }
+
+  isValidTicketObject(obj: any) {
+    return (
+      typeof obj === 'object' &&
+      obj !== null &&
+      'title' in obj &&
+      'description' in obj &&
+      'ticket_type' in obj
+    );
+  }
+
 }
