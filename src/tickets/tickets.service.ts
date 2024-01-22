@@ -50,6 +50,11 @@ export class TicketsService {
     return ticket;
   }
 
+  /**
+   * Retrieves a paginated list of tickets based on the provided criteria.
+   * @param getTicketDto - The DTO containing the search criteria.
+   * @returns A Promise that resolves to a TicketPaginator object.
+   */
   async findAll(getTicketDto: GetTicketDto): Promise<TicketPaginator> {
     let { status, search, limit, page, ticket_type } = getTicketDto;
 
@@ -82,6 +87,12 @@ export class TicketsService {
     }
   }
 
+  /**
+   * Finds a ticket by its UUID.
+   * @param uuid - The UUID of the ticket to find.
+   * @returns The found ticket.
+   * @throws NotFoundException if the ticket is not found.
+   */
   async findOne(uuid: string) {
     const ticket = await this.ticketRepository.findOne({ where: { uuid }, relations: ['customer'] });
     if (!ticket) {
@@ -90,6 +101,13 @@ export class TicketsService {
     return ticket;
   }
 
+  /**
+   * Finds tickets by customer UUID.
+   * Function is used internally by the service and its dependencies.
+   * @param uuid - The UUID of the customer.
+   * @returns A promise that resolves to an array of tickets.
+   * @throws NotFoundException if the customer is not found.
+   */
   async findByCustomerInternal(uuid: string) {
     const customer = await this.usersService.findOneCustomer(uuid);
     if (!customer) {
@@ -100,6 +118,14 @@ export class TicketsService {
     return tickets;
   }
 
+  /**
+   * Finds tickets by customer UUID.
+   * 
+   * @param uuid - The UUID of the customer.
+   * @param getTicketDto - Optional DTO for filtering and pagination.
+   * @returns A promise that resolves to a TicketPaginator object.
+   * @throws NotFoundException if the customer is not found.
+   */
   async findByCustomer(uuid: string, getTicketDto?: GetTicketDto): Promise<TicketPaginator> {
     const customer = await this.usersService.findOneCustomer(uuid);
     if (!customer) {
@@ -129,6 +155,14 @@ export class TicketsService {
     };
   }
 
+  /**
+   * Finds tickets by agent UUID.
+   * 
+   * @param uuid - The UUID of the agent.
+   * @param getTicketDto - Optional DTO for filtering tickets.
+   * @returns A promise that resolves to a TicketPaginator object.
+   * @throws NotFoundException if the agent is not found.
+   */
   async findByAgent(uuid: string, getTicketDto?: GetTicketDto): Promise<TicketPaginator> {
     const agent = await this.usersService.findOneAgent(uuid);
     if (!agent) {
@@ -158,6 +192,14 @@ export class TicketsService {
     };
   }
 
+  /**
+   * Adds an agent to a ticket.
+   * @param uuid - The UUID of the ticket.
+   * @param agentUuid - The UUID of the agent.
+   * @returns A Promise that resolves to the updated ticket.
+   * @throws NotFoundException if the ticket or agent is not found.
+   * @throws BadRequestException if the ticket already has an agent.
+   */
   async addAgentToTicket(uuid: string, agentUuid: string): Promise<Ticket> {
     const ticket = await this.ticketRepository.findOne({ where: { uuid }, relations: ['agents'] });
     if (!ticket) {
@@ -174,6 +216,13 @@ export class TicketsService {
     return await this.ticketRepository.save(ticket);
   }
 
+  /**
+   * Removes an agent from a ticket.
+   * @param uuid - The UUID of the ticket.
+   * @param agentUuid - The UUID of the agent to be removed.
+   * @returns A Promise that resolves to the updated ticket.
+   * @throws NotFoundException if the ticket or agent is not found.
+   */
   async removeAgentFromTicket(uuid: string, agentUuid: string): Promise<Ticket> {
     const ticket = await this.ticketRepository.findOne({ where: { uuid }, relations: ['agents'] });
     if (!ticket) {
@@ -187,6 +236,13 @@ export class TicketsService {
     return this.ticketRepository.save(ticket);
   }
 
+  /**
+   * Updates a ticket with the specified UUID.
+   * @param uuid - The UUID of the ticket to update.
+   * @param updateTicketDto - The data to update the ticket with.
+   * @returns The updated ticket.
+   * @throws NotFoundException if the ticket with the specified UUID is not found.
+   */
   async update(uuid: string, updateTicketDto: UpdateTicketDto) {
     const ticket = await this.ticketRepository.findOne({ where: { uuid }, relations: ['customer'] });
     if (!ticket) {
@@ -198,15 +254,11 @@ export class TicketsService {
     // return this.ticketRepository.save({ ...ticket, ...updateTicketDto });
   }
 
-  async testClassifier(uuid: string) {
-    const ticket = await this.ticketRepository.findOne({ where: { uuid } });
-    if (!ticket) {
-      throw new NotFoundException('Ticket not found');
-    }
-    console.log('Ticket:', ticket);
-    this.classifyTicket(ticket);
-  }
-
+  /**
+   * Classifies a ticket by calling the OpenAI API and updates the ticket with the classified ticket type.
+   * @param ticket - The ticket to be classified.
+   * @throws Error if ticket classification fails.
+   */
   async classifyTicket(ticket: Ticket) {
     try {
       const { } = ticket;
@@ -230,6 +282,12 @@ export class TicketsService {
     }
   }
 
+  /**
+   * Checks if the given object is a valid ticket object.
+   * 
+   * @param obj - The object to be checked.
+   * @returns True if the object is a valid ticket object, false otherwise.
+   */
   isValidTicketObject(obj: any) {
     return (
       typeof obj === 'object' &&

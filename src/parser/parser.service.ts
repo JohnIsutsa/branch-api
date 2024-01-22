@@ -23,6 +23,10 @@ export class ParserService {
         private messageService: MessagesService,
     ) { }
 
+    /**
+     * Parses a CSV file and writes the parsed data to an output JSON file.
+     * @returns A Promise that resolves when the parsing and writing process is complete.
+     */
     async parseCsvFile(): Promise<void> {
         const results = [];
         console.log(path.resolve(__dirname, '..', '..', 'GeneralistRails_Project_MessageData.csv'));
@@ -36,6 +40,11 @@ export class ParserService {
             });
     }
 
+    /**
+     * Sorts the JSON file based on the 'User ID' and 'Timestamp (UTC)' fields.
+     * Writes the sorted JSON data to a new file named 'sorted-messages.json'.
+     * @returns A Promise that resolves when the sorting and writing is complete.
+     */
     async sortJsonFile(): Promise<void> {
         const filePath = path.resolve(__dirname, '..', '..', 'sample-messages.json');
         const data = fs.readFileSync(filePath, 'utf8');
@@ -49,6 +58,12 @@ export class ParserService {
         fs.writeFileSync('sorted-messages.json', JSON.stringify(sortedJson, null, 2));
     }
 
+    /**
+     * Processes the messages by reading and parsing a JSON file,
+     * creating or retrieving users and tickets, and associating
+     * messages with tickets.
+     * @returns A Promise that resolves to void.
+     */
     async processMessages(): Promise<void> {
         // Read and parse the JSON file
         const filePath = path.resolve(__dirname, '..', '..', 'sorted-messages.json')
