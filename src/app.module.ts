@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from './config/config.module';
-import { UsersModule } from './users/users.module';
-import { TicketsModule } from './tickets/tickets.module';
-import { MessagesModule } from './messages/messages.module';
-import { ChatModule } from './chat/chat.module';
-import { ParserModule } from './parser/parser.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { ChatModule } from './chat/chat.module';
+import { ConfigModule } from './config/config.module';
 import { RemovePasswordInterceptor } from './interceptors/remove-password.interceptor';
+import { MessagesModule } from './messages/messages.module';
+import { ParserModule } from './parser/parser.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { RemovePasswordInterceptor } from './interceptors/remove-password.interc
     ChatModule,
     ParserModule
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
