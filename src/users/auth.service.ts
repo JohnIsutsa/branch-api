@@ -13,7 +13,7 @@ export class AuthService {
     ) { }
 
     async userSignUp(createUserDto: CreateUserDto, role: UserRole) {
-        const user = await this.usersService.findByEmail(createUserDto.email);
+        const user = await this.usersService.findByEmailInternal(createUserDto.email);
         if (user) {
             throw new BadRequestException('User already exists');
         }
@@ -31,7 +31,7 @@ export class AuthService {
     }
 
     async userSignin(email: string, password: string, role: UserRole) {
-        const user = await this.usersService.findByEmail(email);
+        const user = await this.usersService.findByEmailInternal(email);
         if (!user) {
             throw new BadRequestException('Invalid credentials');
         }

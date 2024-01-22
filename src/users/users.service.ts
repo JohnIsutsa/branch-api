@@ -60,6 +60,10 @@ export class UsersService {
     return user;
   }
 
+  async findByEmailInternal(email: string): Promise<User> {
+    return await this.userRepo.findOne({ where: { email } });
+  }
+
 
   async findOneCustomer(uuid: string) {
     const customer = await this.userRepo.findOne({ where: { uuid } });
