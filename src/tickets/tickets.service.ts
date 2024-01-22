@@ -51,7 +51,7 @@ export class TicketsService {
   }
 
   async findAll(getTicketDto: GetTicketDto): Promise<TicketPaginator> {
-    let { status, search, limit, page } = getTicketDto;
+    let { status, search, limit, page, ticket_type } = getTicketDto;
 
     if (!page || page < 1) page = 1;
     if (!limit || limit < 1) limit = 15;
@@ -60,10 +60,10 @@ export class TicketsService {
 
     const options: FindManyOptions<Ticket> = {
       relations: ['customer'],
-      skip: startIndex,
-      take: limit,
+      // skip: startIndex,
+      // take: limit,
       order: { created_at: 'DESC' },
-      where: { status: status },
+      where: { status: status, ticket_type: ticket_type },
     };
 
     let data = await this.ticketRepository.find(options);
@@ -77,7 +77,7 @@ export class TicketsService {
     const url = `/tickets/?limit=${limit}`
 
     return {
-      ...paginate(results.length, page, limit, results.length, url),
+      ...paginate(data.length, page, limit, results.length, url),
       data: results,
     }
   }
@@ -90,30 +90,62 @@ export class TicketsService {
     return ticket;
   }
 
-  async findByCustomer(uuid: string) {
+  async findByCustomer(uuid: string, getTicketDto?: GetTicketDto): Promise<TicketPaginator> {
     const customer = await this.usersService.findOneCustomer(uuid);
     if (!customer) {
       throw new NotFoundException('Customer not found');
     }
 
-    const tickets = await this.ticketRepository.find({ relations: ['customer'], where: { customer: { uuid: customer.uuid } } });
-    return tickets;
+    let { limit, page } = getTicketDto;
+    if (!page || page < 1) page = 1;
+    if (!limit || limit < 1) limit = 15;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const options: FindManyOptions<Ticket> = {
+      relations: ['customer'],
+      where: { customer: { uuid: customer.uuid } },
+      order: { created_at: 'DESC' },
+    };
+
+    let data = await this.ticketRepository.find(options);
+
+    const results = data.slice(startIndex, endIndex);
+    const url = `/tickets/customer/${uuid}?limit=${limit}`;
+
+    return {
+      ...paginate(data.length, page, limit, results.length, url),
+      data: results,
+    };
   }
 
-  async findByAgent(uuid: string) {
+  async findByAgent(uuid: string, getTicketDto?: GetTicketDto): Promise<TicketPaginator> {
     const agent = await this.usersService.findOneAgent(uuid);
     if (!agent) {
       throw new NotFoundException('Agent not found');
     }
 
+    let { limit, page } = getTicketDto;
+    if (!page || page < 1) page = 1;
+    if (!limit || limit < 1) limit = 15;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
     const findOptions: FindManyOptions<Ticket> = {
       relations: ['agents', 'customer'],
       where: { agents: { uuid } },
+      order: { created_at: 'DESC' },
     };
 
-    const tickets = await this.ticketRepository.find(findOptions);
+    const data = await this.ticketRepository.find(findOptions);
 
-    return tickets;
+    const results = data.slice(startIndex, endIndex);
+    const url = `/tickets/agent/${uuid}?limit=${limit}`;
+
+    return {
+      ...paginate(data.length, page, limit, results.length, url),
+      data: results,
+    };
   }
 
   async addAgentToTicket(uuid: string, agentUuid: string): Promise<Ticket> {
@@ -146,7 +178,7 @@ export class TicketsService {
   }
 
   async update(uuid: string, updateTicketDto: UpdateTicketDto) {
-    const ticket = await this.ticketRepository.findOne({ where: { uuid } });
+    const ticket = await this.ticketRepository.findOne({ where: { uuid }, relations: ['customer'] });
     if (!ticket) {
       throw new NotFoundException('Ticket not found');
     }
