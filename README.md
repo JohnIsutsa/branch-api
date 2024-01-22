@@ -60,6 +60,21 @@ Before you begin, ensure you have the following installed:
 
 1. Set up your database and configure the connection in `src/config/database.config.ts`.
 2. Configure any environment variables needed for your project.
+    ```plaintext
+    JWT_SECRET=qwenvvvvvvvvvvvvvvvvxxxxxxxxxxxxxxxxxxx
+    JWT_EXPIRATION=60s
+    PORT=9900
+    BASE_URL=http://localhost:9900/api
+    
+    
+    DB_URL=postgres://postgres:{password}@localhost:5432/branch_db 
+    DB_TYPE='postgres'
+    DB_SSL='true'
+    
+    CHAT_PORT=9902
+    
+    OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    ```
 
 ## Usage
 
