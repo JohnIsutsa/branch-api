@@ -82,13 +82,13 @@ export class ParserService {
 
             // Check if the ticket exists
             let ticket: Ticket;
-            let tickets = await this.ticketService.findByCustomer(user.uuid);
+            let tickets = await this.ticketService.findByCustomerInternal(user.uuid);
             console.log('Tickets  found', tickets)
 
 
             // If the ticket doesn't exist, create a new ticket
             let isNewTicket = false;
-            if (tickets.data.length === 0) {
+            if (tickets.length === 0) {
                 const createTicketDto: CreateTicketDto = {
                     customer_uuid: user.uuid,
                     title: message['Message Body'].split(' ').slice(0, 7).join(' '), // Use the first 7 words as the title

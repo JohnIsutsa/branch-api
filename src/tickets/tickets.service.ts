@@ -90,6 +90,16 @@ export class TicketsService {
     return ticket;
   }
 
+  async findByCustomerInternal(uuid: string) {
+    const customer = await this.usersService.findOneCustomer(uuid);
+    if (!customer) {
+      throw new NotFoundException('Customer not found');
+    }
+    
+    const tickets = await this.ticketRepository.find({ relations: ['customer'], where: { customer: { uuid: customer.uuid } } });
+    return tickets;
+  }
+
   async findByCustomer(uuid: string, getTicketDto?: GetTicketDto): Promise<TicketPaginator> {
     const customer = await this.usersService.findOneCustomer(uuid);
     if (!customer) {
@@ -199,7 +209,7 @@ export class TicketsService {
 
   async classifyTicket(ticket: Ticket) {
     try {
-      const {} = ticket;
+      const { } = ticket;
       const completion = await callOpenAI(ticket);
       const jsonString = completion.choices[0].text.trim();
       const jsonObject = JSON.parse(jsonString);
