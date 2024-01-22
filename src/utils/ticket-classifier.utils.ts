@@ -2,10 +2,17 @@ import OpenAI from "openai";
 import { Ticket } from "../tickets/entities/ticket.entity";
 
 
+/**
+ * Calls the OpenAI API to classify a customer support ticket into a specific category.
+ * 
+ * @param ticket - The ticket object containing the title and description of the ticket.
+ * @returns A Promise that resolves to the JSON object representing the classified ticket.
+ * @throws An error if there is an issue calling the OpenAI API.
+ */
 export async function callOpenAI(ticket: Ticket) {
-    try {
-        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-        const prompt = `
+   try {
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const prompt = `
 You are an assistant for a customer support team at a company that gives loans to customers.
 You are designed to assist customer support teams in classifying customer tickets related to loan inquiries. 
 Your goal is to generate a JSON object with classification details based on the provided ticket title and description.
@@ -65,19 +72,19 @@ Title: ${ticket.title}
 Description: ${ticket.description}
 `
 
-        const completion = await openai.completions.create({
-            model: 'gpt-3.5-turbo-instruct',
-            max_tokens: 1024,
-            temperature: 0.5,
-            prompt
-        })
+      const completion = await openai.completions.create({
+         model: 'gpt-3.5-turbo-instruct',
+         max_tokens: 1024,
+         temperature: 0.5,
+         prompt
+      })
 
-        console.log(completion)
+      console.log(completion)
 
-        return completion
-    } catch (error) {
-        console.error('An error occurred while calling OPEN AI',error)
-        throw error;
-    }
+      return completion
+   } catch (error) {
+      console.error('An error occurred while calling OPEN AI', error)
+      throw error;
+   }
 
 }

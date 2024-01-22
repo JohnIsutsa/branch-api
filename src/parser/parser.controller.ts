@@ -1,6 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { ParserService } from './parser.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Parser')
 @Controller('parser')
 export class ParserController {
   constructor(private readonly parserService: ParserService) {}

@@ -25,6 +25,7 @@ async function bootstrap() {
     .addTag('Users')
     .addTag('Tickets')
     .addTag('Messages')
+    .addTag('Parser')
     .addBearerAuth()
     .build();
 
