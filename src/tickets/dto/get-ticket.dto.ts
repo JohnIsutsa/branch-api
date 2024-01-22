@@ -1,4 +1,4 @@
-import { TicketStatus } from "../../common/enums";
+import { TicketStatus, TicketType } from "../../common/enums";
 import { PaginationArgs } from "../../common/dto/pagination-args.dto";
 import { Paginator } from "../../common/dto/paginator.dto";
 import { Ticket} from "../entities/ticket.entity";
@@ -18,4 +18,9 @@ export class GetTicketDto extends PaginationArgs {
     @ApiProperty({required: false})
     @IsOptional()
     search?: string
+
+    @ApiProperty({required: false})
+    @IsEnum(TicketType)
+    @IsOptional()
+    ticket_type?: TicketType
 }

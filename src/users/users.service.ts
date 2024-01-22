@@ -53,7 +53,11 @@ export class UsersService {
    * @returns A promise that resolves to the found user.
    */
   async findByEmail(email: string): Promise<User> {
-    return this.userRepo.findOne({ where: { email } })
+    const user = await this.userRepo.findOne({ where: { email } })
+    if (!user) {
+      throw new NotFoundException('No user found with the provided email');
+    }
+    return user;
   }
 
 

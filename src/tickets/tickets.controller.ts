@@ -28,15 +28,15 @@ export class TicketsController {
   }
 
   @Get('customer/:uuid')
-  async findByCustomer(@Param('uuid') uuid: string) {
-    const tickets = await this.ticketsService.findByCustomer(uuid);
-    return { status: 'success', data: tickets }
+  async findByCustomer(@Param('uuid') uuid: string, @Query() getTicketDto: GetTicketDto) {
+    const tickets = await this.ticketsService.findByCustomer(uuid, getTicketDto);
+    return tickets;
   }
 
   @Get('agent/:uuid')
-  async findByAgent(@Param('uuid') uuid: string) {
-    const tickets = await this.ticketsService.findByAgent(uuid);
-    return { status: 'success', data: tickets }
+  async findByAgent(@Param('uuid') uuid: string, @Query() getTicketDto: GetTicketDto) {
+    const tickets = await this.ticketsService.findByAgent(uuid, getTicketDto);
+    return tickets;
   }
 
   @Patch(':uuid/add-agent')
@@ -52,7 +52,8 @@ export class TicketsController {
   }
 
   @Patch(':uuid')
-  update(@Param('uuid') uuid: string, @Body() updateTicketDto: UpdateTicketDto) {
-    return this.ticketsService.update(uuid, updateTicketDto);
+  async update(@Param('uuid') uuid: string, @Body() updateTicketDto: UpdateTicketDto) {
+    const ticket = await this.ticketsService.update(uuid, updateTicketDto);
+    return { status: 'success', data: ticket };
   }
 }
