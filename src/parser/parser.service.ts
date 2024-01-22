@@ -88,7 +88,7 @@ export class ParserService {
 
             // If the ticket doesn't exist, create a new ticket
             let isNewTicket = false;
-            if (tickets.length === 0) {
+            if (tickets.data.length === 0) {
                 const createTicketDto: CreateTicketDto = {
                     customer_uuid: user.uuid,
                     title: message['Message Body'].split(' ').slice(0, 7).join(' '), // Use the first 7 words as the title
