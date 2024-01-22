@@ -6,8 +6,9 @@ import { ChatService } from './chat.service';
 import { JoinChatDto } from './dto/create-chat.dto';
 import { EventType } from './notification.enums';
 import { CreateTicketDto } from 'src/tickets/dto/create-ticket.dto';
+import { Ticket } from '../tickets/entities/ticket.entity';
 
-@WebSocketGateway(parseInt(process.env.CHAT_PORT), { pingTimeout: 60000, pingInterval: 25000 })
+@WebSocketGateway(parseInt(process.env.CHAT_PORT), { pingTimeout: 60000, pingInterval: 25000,cors: {origin: 'http://localhost:3000'}})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
   constructor(private readonly chatService: ChatService) { }
 
@@ -45,13 +46,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     console.log(`Client ${client.id} joined private chat room ${ticket_uuid}`);
   }
 
-  @SubscribeMessage('sendPrivateMessage')
-  sendPrivateMessage(@MessageBody() createMessageDto: CreateMessageDto) {
+  @SubscribeMessage('onNewMessage')
+  async sendPrivateMessage(@MessageBody() createMessageDto: CreateMessageDto) {
     console.log('sendPrivateMessage', createMessageDto);
-    this.chatService.sendMessage(createMessageDto);
+    const message = await this.chatService.sendMessage(createMessageDto);
 
     const { ticket_uuid } = createMessageDto;
-    this.server.to(ticket_uuid).emit(EventType.PRIVATE_MESSAGE, createMessageDto, (error: any) => {
+    this.server.to(ticket_uuid).emit(EventType.PRIVATE_MESSAGE, message, (error: any) => {
       if (error) {
         console.log(`Error sending private message to room ${ticket_uuid}`, error);
       }
@@ -59,8 +60,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('onNewTicket')
-  handleNewTicket(@MessageBody() createTicketDto: CreateTicketDto) {
-    console.log('newTicket', createTicketDto);
-    this.server.emit(EventType.NEW_TICKET, createTicketDto);
+  handleNewTicket(@MessageBody() ticket: Ticket) {
+    console.log('newTicket', ticket);
+    
+    //Add the client to a room with the ticket uuid
+    // Broadcast an event to all agents saying that a new ticket has been created
+    this.server.emit(EventType.NEW_TICKET, ticket);
   }
 }
