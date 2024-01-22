@@ -59,7 +59,7 @@ Before you begin, ensure you have the following installed:
 ### Configuration
 
 1. Set up your database and configure the connection in `src/config/database.config.ts`.
-2. Configure any environment variables needed for your project.
+2. Configure any environment variables needed for your project. In development use .env.development at the root of your project.
     ```plaintext
     JWT_SECRET=qwenvvvvvvvvvvvvvvvvxxxxxxxxxxxxxxxxxxx
     JWT_EXPIRATION=60s
@@ -78,21 +78,21 @@ Before you begin, ensure you have the following installed:
 
 ## Usage
 
-Run the backend server:
+Run the backend development server:
 
 ```bash
-npm run start
+npm run start:dev
 ```
 
-Visit `http://localhost:9000/api/docs` to access the API documentation.
+Visit `http://localhost:9900/api/docs` to access the API documentation.
 
 ## API Endpoints
 
-Explore the API endpoints and documentation by visiting `http://localhost:3000/api/docs` after starting the backend server.
+Explore the API endpoints and documentation by visiting `http://localhost:9900/api/docs` after starting the backend server.
 
 ## WebSocket Integration
 
-Real-time communication is achieved through WebSocket integration. WebSocket connections are established at `ws://localhost:3000`.
+Real-time communication is achieved through WebSocket integration. WebSocket connections are established at `http://localhost:9902`.
 
 
 ## Contributing
