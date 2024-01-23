@@ -8,7 +8,7 @@ import { EventType } from './notification.enums';
 import { CreateTicketDto } from 'src/tickets/dto/create-ticket.dto';
 import { Ticket } from '../tickets/entities/ticket.entity';
 
-@WebSocketGateway(parseInt(process.env.CHAT_PORT), { pingTimeout: 60000, pingInterval: 25000,cors: {origin: 'http://localhost:3000'}})
+@WebSocketGateway({ pingTimeout: 60000, pingInterval: 25000,cors: {origin: 'http://localhost:3000'}, namespace: 'chat'})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
   constructor(private readonly chatService: ChatService) { }
 
